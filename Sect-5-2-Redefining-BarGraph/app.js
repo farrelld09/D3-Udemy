@@ -62,14 +62,42 @@ svg.selectAll( 'text' )
 // Events
 
 d3.select('button').on( 'click' , function(){
-    data.reverse();
+
+       data.reverse()
+
+       y_scale.domain([ 0, d3.max(data) ])
 
     svg.selectAll( 'rect' )
         .data( data )
+        .transition()
+        .delay( function( d, i ) {
+            return i / data.length * 1000
+        })
+        .duration( 1000 )
+        .ease( d3.easeElasticOut )
         .attr( 'y', function( d ){
                 return chart_height - y_scale( d );
             })
         .attr( 'height', function( d ){
             return y_scale( d );
         })
+
+    svg.selectAll( 'text' )
+        .data(data)
+        .transition()
+        .delay( function( d, i ) {
+            return i / data.length * 1000
+        })
+        .duration( 1000 )
+        .ease( d3.easeElasticOut )
+        .text(function( d ){
+            return d;
+        })
+        .attr( 'x', function( d, i ){
+            return x_scale( i ) + x_scale.bandwidth() / 2;
+        })
+        .attr( 'y', function( d ){
+            return chart_height - y_scale( d ) + 15;
+        });
+
 });
